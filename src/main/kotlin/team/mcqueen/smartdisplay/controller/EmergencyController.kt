@@ -13,6 +13,7 @@ class EmergencyController : EmergencyApi {
             id = 1,
             untilAt = OffsetDateTime.now(),
             text = "Беспилотная опасность!",
+            priority = 1,
             target = 1,
             targetType = TargetType.DISPLAY
         ))
