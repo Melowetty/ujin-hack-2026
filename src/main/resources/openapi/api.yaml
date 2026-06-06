@@ -306,7 +306,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /emergency:
+    /emergency:
     post:
       tags: [Emergency]
       summary: Создать экстренное сообщение
@@ -326,6 +326,21 @@ paths:
                 $ref: '#/components/schemas/Emergency'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /emergency/{emergencyId}:
+    parameters:
+      - $ref: '#/components/parameters/EmergencyId'
+    delete:
+      tags: [Emergency]
+      summary: Удалить экстренное сообщение
+      operationId: deleteEmergency
+      responses:
+        '204':
+          description: Экстренное сообщение удалён
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /widgets:
     get:
@@ -476,6 +491,15 @@ components:
       in: path
       required: true
       description: ID дисплея
+      schema:
+        type: integer
+        format: int64
+
+    EmergencyId:
+      name: emergencyId
+      in: path
+      required: true
+      description: ID экстренного сообщения
       schema:
         type: integer
         format: int64
