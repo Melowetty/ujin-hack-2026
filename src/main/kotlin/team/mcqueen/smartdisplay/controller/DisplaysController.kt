@@ -12,15 +12,6 @@ class DisplaysController(
     private val displayService: DisplayService
 ) : DisplaysApi {
     override fun createDisplay(id: Long, displayInput: DisplayInput): ResponseEntity<Display> {
-//        return ResponseEntity.ok(Display(
-//            id = 1,
-//            name = "Display1",
-//            templateId = 1,
-//            houseId = 1,
-//            floor = 1,
-//            entrance = 1
-//            )
-//        )
         return ResponseEntity.ok(displayService.createDisplay(
             displayInput.name,
             displayInput.templateId,
@@ -30,51 +21,25 @@ class DisplaysController(
         ))
     }
     override fun deleteDisplay(id: Long, displayId: Long): ResponseEntity<Unit> {
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok(displayService.deleteDisplay(displayId))
     }
 
     override fun getDisplayById(id: Long, displayId: Long): ResponseEntity<Display> {
-        return ResponseEntity.ok(Display(
-            id = 1,
-            name = "Display1",
-            templateId = 1,
-            houseId = 1,
-            floor = 1,
-            entrance = 1
-        )
-        )
+        return ResponseEntity.ok(displayService.getDisplayById(displayId))
     }
 
     override fun getDisplays(id: Long): ResponseEntity<List<Display>> {
-        return ResponseEntity.ok(listOf(
-            Display(
-            id = 1,
-            name = "Display1",
-            templateId = 1,
-            houseId = 1,
-            floor = 1,
-            entrance = 1
-        ),
-            Display(
-                id = 2,
-                name = "Display2",
-                templateId = 1,
-                houseId = 1,
-                floor = 2,
-                entrance = 1)
-        )
-        )
+        return ResponseEntity.ok(displayService.getHouseDisplays(id))
     }
 
     override fun updateDisplay(id: Long, displayId: Long, displayInput: DisplayInput): ResponseEntity<Display> {
-        return ResponseEntity.ok(Display(
-            id = 1,
-            name = "Display1 edited",
-            templateId = 2,
-            houseId = 1,
-            floor = 1,
-            entrance = 1
-        )
-        )
+        return ResponseEntity.ok(displayService.updateDisplay(
+            displayId,
+            displayInput.name,
+            displayInput.templateId,
+            id,
+            displayInput.floor,
+            displayInput.entrance
+        ))
     }
 }
