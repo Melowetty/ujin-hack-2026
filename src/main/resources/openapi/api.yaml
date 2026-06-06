@@ -301,8 +301,6 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  # ─── Templates ────────────────────────────────────────────────────────────
-
   /templates:
     get:
       tags: [Templates]
@@ -629,11 +627,11 @@ components:
       description: |
         Тип цели экстренного сообщения:
         - `DISPLAY` — отдельный дисплей
-        - `GROUP` — группа дисплеев
+        - `HOUSE` — весь дом
 
     Emergency:
       type: object
-      required: [id, until_at, text, target, target_type]
+      required: [id, text, target, target_type, priority]
       properties:
         id:
           type: integer
@@ -651,12 +649,17 @@ components:
           format: int64
           description: ID цели (дисплея или группы в зависимости от target_type)
           example: 10
+        priority:
+          type: integer
+          format: int64
+          example: 1
+          description: Приоритет алерта (чем выше по числу - тем приоритетнее)
         target_type:
           $ref: '#/components/schemas/TargetType'
 
     EmergencyInput:
       type: object
-      required: [until_at, text, target, target_type]
+      required: [until_at, text, target, target_type, priority]
       properties:
         until_at:
           type: string
@@ -669,6 +672,11 @@ components:
           type: integer
           format: int64
           example: 10
+        priority:
+          type: integer
+          format: int64
+          example: 1
+          description: Приоритет алерта (чем выше по числу - тем приоритетнее)
         target_type:
           $ref: '#/components/schemas/TargetType'
 
@@ -683,16 +691,12 @@ components:
     FieldType:
       type: string
       enum:
-        - WEATHER
-        - TEMPERATURE
-        - FREE_PARKING_PLACES
-        - ALL_PARKING_PLACES
+        - STRING
+        - INTEGER
       description: |
         Тип поля виджета:
-        - `WEATHER` — общее описание погоды
-        - `TEMPERATURE` — температура
-        - `FREE_PARKING_PLACES` — количество свободных парковочных мест
-        - `ALL_PARKING_PLACES` — общее количество парковочных мест
+        - `STRING` — строковое значение
+        - `INTEGER` — число
 
     WidgetField:
       type: object
