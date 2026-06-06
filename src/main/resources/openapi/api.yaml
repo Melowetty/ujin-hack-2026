@@ -140,10 +140,6 @@ paths:
       responses:
         '200':
           description: Роль успешно обновлена
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
