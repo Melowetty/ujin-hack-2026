@@ -6,6 +6,8 @@ plugins {
     id("org.springframework.boot") version "3.5.14"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.openapi.generator") version "7.10.0"
+    kotlin("plugin.jpa") version "2.1.21"
+    kotlin("plugin.allopen") version "2.1.21"
 }
 val springCloudVersion by extra("2025.0.2")
 
@@ -86,7 +88,7 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+    //implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     testImplementation("org.springframework.security:spring-security-test")
 
@@ -96,6 +98,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(kotlin("stdlib"))
 }
 
 kotlin {
@@ -111,4 +114,12 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.Embeddable")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }
