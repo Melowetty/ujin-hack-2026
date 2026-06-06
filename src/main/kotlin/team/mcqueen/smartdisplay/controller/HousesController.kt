@@ -15,14 +15,16 @@ class HousesController: HousesApi{
                 name = "Дом на Ленине",
                 floorsNumber = 3,
                 address = "ул. Ленина 67",
-                entrancesNumber = 2
+                entrancesNumber = 2,
+                city = "Пермь"
             ),
             House(
                 id = 2,
                 name = "Дом на Парковой",
                 address = "ул. Парковая 41",
                 floorsNumber = 10,
-                entrancesNumber = 5
+                entrancesNumber = 5,
+                city = "Москва"
             )
             )
         )

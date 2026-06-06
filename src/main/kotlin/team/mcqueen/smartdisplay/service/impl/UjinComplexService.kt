@@ -37,9 +37,10 @@ class UjinComplexService(
                     House(
                         id = it.id!!.toLong(),
                         name = it.building?.title ?: "Дом",
-                        address = it.building?.address?.fullAddress ?: "Пермь",
+                        address = it.building?.address?.fullAddress ?: "N/a",
                         floorsNumber = it.building?.floor ?: 0,
-                        entrancesNumber = it.building?.entranceCount ?: 0
+                        entrancesNumber = it.building?.entranceCount ?: 0,
+                        city = it.building?.address?.city ?: "N/a"
                     )
                 }
             )

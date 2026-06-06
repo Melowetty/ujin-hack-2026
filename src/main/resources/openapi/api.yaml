@@ -78,7 +78,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RegisterRequest'
       responses:
-        '201':
+        '200':
           description: Пользователь зарегистрирован
         '409':
           description: Пользователь с таким логином уже существует
@@ -607,7 +607,7 @@ components:
 
     House:
       type: object
-      required: [id, name, address, floors_number, entrances_number]
+      required: [id, name, address, city, floors_number, entrances_number]
       properties:
         id:
           type: integer
@@ -625,6 +625,9 @@ components:
         entrances_number:
           type: integer
           example: 4
+        city:
+          type: string
+          example: "Пермь"
 
     Display:
       type: object
