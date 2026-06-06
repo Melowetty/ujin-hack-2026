@@ -1,8 +1,15 @@
 openapi: 3.0.3
 info:
   title: Display Management API
-  version: 1.0.0
-  description: API для управления домами, дисплеями, группами и экстренными сообщениями
+  version: 2.0.0
+  description: |
+    API для управления домами, дисплеями, группами, шаблонами и экстренными сообщениями.
+
+    ## Аутентификация
+    Все эндпоинты (кроме `/auth/*`) требуют JWT Bearer токен в заголовке:
+    ```
+    Authorization: Bearer <accessToken>
+    ```
 
 servers:
   - url: https://api.deeply-bath.space
@@ -10,19 +17,112 @@ servers:
   - url: http://localhost:8082
     description: Development
 
+security:
+  - BearerAuth: []
+
 tags:
+  - name: Auth
+    description: Аутентификация и управление токенами
+  - name: Complexes
+    description: Жилые комплексы
   - name: Houses
-    description: Управление домами
+    description: Дома
   - name: Displays
-    description: Управление дисплеями в домах
+    description: Дисплеи в домах
   - name: Logs
     description: Логи дисплеев
   - name: Emergency
     description: Экстренные сообщения
   - name: Groups
-    description: Управление группами дисплеев
+    description: Группы дисплеев
+  - name: Widgets
+    description: Виджеты
+  - name: Templates
+    description: Шаблоны дисплеев
 
 paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Войти в систему
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Зарегистрировать нового пользователя
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Пользователь зарегистрирован
+        '409':
+          description: Пользователь с таким логином уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Обновить токены по refresh token
+      operationId: refreshToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Токены обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /complexes:
+    get:
+      tags: [Complexes]
+      summary: Получить список жилых комплексов
+      operationId: getComplexes
+      responses:
+        '200':
+          description: Список комплексов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Complex'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /houses:
     get:
@@ -38,6 +138,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/House'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /houses/{id}/displays:
     parameters:
@@ -56,6 +158,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Display'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -76,6 +180,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Display'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -95,6 +201,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Display'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -115,6 +223,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Display'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -125,6 +235,8 @@ paths:
       responses:
         '204':
           description: Дисплей удалён
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -146,6 +258,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Log'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -167,89 +281,126 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Emergency'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
-  /groups:
+  /widgets:
     get:
-      tags: [Groups]
-      summary: Получить список групп
-      operationId: getGroups
+      tags: [Widgets]
+      summary: Получить список доступных виджетов
+      operationId: getWidgets
       responses:
         '200':
-          description: Список групп
+          description: Список виджетов
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Group'
+                  $ref: '#/components/schemas/Widget'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ─── Templates ────────────────────────────────────────────────────────────
+
+  /templates:
+    get:
+      tags: [Templates]
+      summary: Получить список шаблонов
+      operationId: getTemplates
+      responses:
+        '200':
+          description: Список шаблонов
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
     post:
-      tags: [Groups]
-      summary: Создать группу
-      operationId: createGroup
+      tags: [Templates]
+      summary: Создать шаблон
+      operationId: createTemplate
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GroupInput'
+              $ref: '#/components/schemas/TemplateInput'
       responses:
         '201':
-          description: Группа создана
+          description: Шаблон создан
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Template'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
-  /groups/{groupId}:
+  /templates/{templateId}:
     parameters:
-      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/TemplateId'
 
     get:
-      tags: [Groups]
-      summary: Получить группу по ID
-      operationId: getGroupById
+      tags: [Templates]
+      summary: Получить шаблон по ID
+      operationId: getTemplateById
       responses:
         '200':
-          description: Группа
+          description: Шаблон
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Template'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
     put:
-      tags: [Groups]
-      summary: Обновить группу
-      operationId: updateGroup
+      tags: [Templates]
+      summary: Обновить шаблон
+      operationId: updateTemplate
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GroupInput'
+              $ref: '#/components/schemas/TemplateInput'
       responses:
         '200':
-          description: Группа обновлена
+          description: Шаблон обновлён
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/Template'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
     delete:
-      tags: [Groups]
-      summary: Удалить группу
-      operationId: deleteGroup
+      tags: [Templates]
+      summary: Удалить шаблон
+      operationId: deleteTemplate
       responses:
         '204':
-          description: Группа удалена
+          description: Шаблон удалён
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
 
 components:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   parameters:
     HouseId:
@@ -279,7 +430,23 @@ components:
         type: integer
         format: int64
 
+    TemplateId:
+      name: templateId
+      in: path
+      required: true
+      description: ID шаблона
+      schema:
+        type: integer
+        format: int64
+
   responses:
+    Unauthorized:
+      description: Токен отсутствует или недействителен
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
     NotFound:
       description: Ресурс не найден
       content:
@@ -289,8 +456,66 @@ components:
 
   schemas:
 
-    House:
+    LoginRequest:
       type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          example: "s3cr3t"
+
+    RegisterRequest:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+          example: "user@example.com"
+        password:
+          type: string
+          format: password
+          example: "s3cr3t"
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    TokenResponse:
+      type: object
+      required: [accessToken, refreshToken, tokenType, accessTokenExpiresAt, refreshTokenExpiresAt]
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        tokenType:
+          type: string
+          default: "Bearer"
+          example: "Bearer"
+        accessTokenExpiresAt:
+          type: string
+          format: date-time
+          description: Время истечения access токена (ISO 8601 / Unix Instant)
+          example: "2025-06-10T12:00:00Z"
+        refreshTokenExpiresAt:
+          type: string
+          format: date-time
+          description: Время истечения refresh токена (ISO 8601 / Unix Instant)
+          example: "2025-07-10T12:00:00Z"
+
+    Complex:
+      type: object
+      required: [id, name, houses]
       properties:
         id:
           type: integer
@@ -298,17 +523,36 @@ components:
           example: 1
         name:
           type: string
-          example: "Дом на Ленина"
+          example: "ЖК Центральный"
+        houses:
+          type: array
+          items:
+            $ref: '#/components/schemas/House'
+
+    House:
+      type: object
+      required: [id, name, address, floors_number, entrances_number]
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Корпус 1"
+        address:
+          type: string
+          example: "ул. Ленина, 10"
         floors_number:
           type: integer
           example: 9
         entrances_number:
           type: integer
           example: 4
-      required: [id, name, floors_number, entrances_number]
 
     Display:
       type: object
+      required: [id, name, template_id, house_id]
       properties:
         id:
           type: integer
@@ -317,6 +561,10 @@ components:
         name:
           type: string
           example: "Дисплей подъезд 1"
+        template_id:
+          type: integer
+          format: int64
+          example: 3
         house_id:
           type: integer
           format: int64
@@ -329,14 +577,18 @@ components:
           type: integer
           nullable: true
           example: 1
-      required: [id, name, house_id]
 
     DisplayInput:
       type: object
+      required: [name, template_id, house_id]
       properties:
         name:
           type: string
           example: "Дисплей подъезд 1"
+        template_id:
+          type: integer
+          format: int64
+          example: 3
         house_id:
           type: integer
           format: int64
@@ -349,10 +601,10 @@ components:
           type: integer
           nullable: true
           example: 1
-      required: [name, house_id]
 
     Log:
       type: object
+      required: [id, actor, display_id, text]
       properties:
         id:
           type: integer
@@ -361,7 +613,7 @@ components:
         actor:
           type: integer
           format: int64
-          description: ID актора (пользователя), выполнившего действие
+          description: ID пользователя, выполнившего действие
           example: 42
         display_id:
           type: integer
@@ -369,16 +621,19 @@ components:
           example: 10
         text:
           type: string
-          example: "Дисплей обновлён"
-      required: [id, actor, display_id, text]
+          example: "Шаблон дисплея изменён"
 
     TargetType:
       type: string
       enum: [DISPLAY, GROUP]
-      description: Тип цели экстренного сообщения
+      description: |
+        Тип цели экстренного сообщения:
+        - `DISPLAY` — отдельный дисплей
+        - `GROUP` — группа дисплеев
 
     Emergency:
       type: object
+      required: [id, until_at, text, target, target_type]
       properties:
         id:
           type: integer
@@ -390,18 +645,18 @@ components:
           example: "2025-12-31T23:59:59Z"
         text:
           type: string
-          example: "Внимание! Плановое отключение воды"
+          example: "Внимание! Плановое отключение воды с 10:00 до 18:00"
         target:
           type: integer
           format: int64
-          description: ID цели (дисплея или группы)
+          description: ID цели (дисплея или группы в зависимости от target_type)
           example: 10
         target_type:
           $ref: '#/components/schemas/TargetType'
-      required: [id, until_at, text, target, target_type]
 
     EmergencyInput:
       type: object
+      required: [until_at, text, target, target_type]
       properties:
         until_at:
           type: string
@@ -409,47 +664,100 @@ components:
           example: "2025-12-31T23:59:59Z"
         text:
           type: string
-          example: "Внимание! Плановое отключение воды"
+          example: "Внимание! Плановое отключение воды с 10:00 до 18:00"
         target:
           type: integer
           format: int64
-          description: ID цели (дисплея или группы)
           example: 10
         target_type:
           $ref: '#/components/schemas/TargetType'
-      required: [until_at, text, target, target_type]
 
-    Group:
+    WidgetType:
+      type: string
+      enum: [WEATHER, PARKING]
+      description: |
+        Тип виджета:
+        - `WEATHER` — погода
+        - `PARKING` — парковка
+
+    FieldType:
+      type: string
+      enum:
+        - WEATHER
+        - TEMPERATURE
+        - FREE_PARKING_PLACES
+        - ALL_PARKING_PLACES
+      description: |
+        Тип поля виджета:
+        - `WEATHER` — общее описание погоды
+        - `TEMPERATURE` — температура
+        - `FREE_PARKING_PLACES` — количество свободных парковочных мест
+        - `ALL_PARKING_PLACES` — общее количество парковочных мест
+
+    WidgetField:
       type: object
+      required: [name, type, optional]
+      properties:
+        name:
+          type: string
+          example: "temperature"
+        type:
+          $ref: '#/components/schemas/FieldType'
+        optional:
+          type: boolean
+          example: false
+
+    Widget:
+      type: object
+      required: [name, type, fields]
+      properties:
+        name:
+          type: string
+          example: "Погода"
+        type:
+          $ref: '#/components/schemas/WidgetType'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetField'
+
+    Template:
+      type: object
+      required: [id, name, body]
       properties:
         id:
           type: integer
           format: int64
-          example: 1
+          example: 3
         name:
           type: string
-          example: "Группа А"
-        displays:
-          type: array
-          items:
-            $ref: '#/components/schemas/Display'
-          description: Дисплеи, входящие в группу
-      required: [id, name, displays]
+          example: "Стандартный шаблон подъезда"
+        body:
+          type: object
+          description: Произвольная JSON-структура конфигурации шаблона
+          example:
+            layout: "vertical"
+            widgets:
+              - type: "WEATHER"
+                position: 1
+              - type: "PARKING"
+                position: 2
 
-    GroupInput:
+    TemplateInput:
       type: object
+      required: [name, body]
       properties:
         name:
           type: string
-          example: "Группа А"
-        display_ids:
-          type: array
-          items:
-            type: integer
-            format: int64
-          description: ID дисплеев для включения в группу
-          example: [10, 11, 12]
-      required: [name]
+          example: "Стандартный шаблон подъезда"
+        body:
+          type: object
+          description: Произвольная JSON-структура конфигурации шаблона
+          example:
+            layout: "vertical"
+            widgets:
+              - type: "WEATHER"
+                position: 1
 
     Error:
       type: object
