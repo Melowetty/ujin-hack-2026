@@ -12,7 +12,7 @@ import jakarta.persistence.GenerationType
 class LogEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    val id: Long,
+    var id: Long = 0,
 
     @Column
     var actor: Long,

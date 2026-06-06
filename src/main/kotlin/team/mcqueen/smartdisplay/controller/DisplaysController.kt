@@ -5,19 +5,29 @@ import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.DisplaysApi
 import team.mcqueen.smartdisplay.generated.model.Display
 import team.mcqueen.smartdisplay.generated.model.DisplayInput
+import team.mcqueen.smartdisplay.service.DisplayService
 
 @RestController
-class DisplaysController : DisplaysApi {
+class DisplaysController(
+    private val displayService: DisplayService
+) : DisplaysApi {
     override fun createDisplay(id: Long, displayInput: DisplayInput): ResponseEntity<Display> {
-        return ResponseEntity.ok(Display(
-            id = 1,
-            name = "Display1",
-            templateId = 1,
-            houseId = 1,
-            floor = 1,
-            entrance = 1
-            )
-        )
+//        return ResponseEntity.ok(Display(
+//            id = 1,
+//            name = "Display1",
+//            templateId = 1,
+//            houseId = 1,
+//            floor = 1,
+//            entrance = 1
+//            )
+//        )
+        return ResponseEntity.ok(displayService.createDisplay(
+            displayInput.name,
+            displayInput.templateId,
+            id,
+            displayInput.floor,
+            displayInput.entrance
+        ))
     }
     override fun deleteDisplay(id: Long, displayId: Long): ResponseEntity<Unit> {
         return ResponseEntity.ok().build()
