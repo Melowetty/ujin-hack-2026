@@ -631,12 +631,15 @@ components:
 
     Display:
       type: object
-      required: [id, name, house_id]
+      required: [id, name, house_id, token]
       properties:
         id:
           type: integer
           format: int64
           example: 10
+        token:
+          type: string
+          example: "8S1mv0lv"
         name:
           type: string
           example: "Дисплей подъезд 1"

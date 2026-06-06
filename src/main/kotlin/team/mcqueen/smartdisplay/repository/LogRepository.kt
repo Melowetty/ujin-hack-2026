@@ -6,6 +6,6 @@ import team.mcqueen.smartdisplay.domain.log.LogEntity
 import java.util.*
 
 @Repository
-interface LogRepository : JpaRepository<LogEntity, UUID> {
+interface LogRepository : JpaRepository<LogEntity, Long> {
     fun findAllByDisplayId(displayId: Long): List<LogEntity>?
 }

@@ -18,6 +18,9 @@ class DisplayEntity(
     @Column
     var name: String,
 
+    @Column
+    var token: String,
+
     @Column(nullable = true)
     var templateId: Long?,
 
