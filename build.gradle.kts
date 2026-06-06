@@ -1,3 +1,5 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
     kotlin("jvm") version "2.1.21"
     kotlin("plugin.spring") version "2.1.21"
@@ -5,6 +7,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.openapi.generator") version "7.10.0"
 }
+val springCloudVersion by extra("2025.0.2")
 
 group = "team.mcqueen"
 version = "0.0.1-SNAPSHOT"
@@ -42,6 +45,25 @@ openApiGenerate {
     )
 }
 
+val generateUjinApi = tasks.register<GenerateTask>("generateUjinApi") {
+    generatorName.set("kotlin-spring")
+    inputSpec.set("$rootDir/src/main/resources/openapi/ujin-api.yaml")
+    outputDir.set(openApiOutputDir)
+    apiPackage.set("team.mcqueen.smartdisplay.ujin.generated.api")
+    modelPackage.set("team.mcqueen.smartdisplay.ujin.generated.model")
+    library.set("spring-cloud")
+    skipValidateSpec.set(true)
+    configOptions.set(
+        mapOf(
+            "useSpringBoot3"     to "true",
+            "interfaceOnly"      to "true",
+            "useTags"            to "true",
+            "enumPropertyNaming" to "UPPERCASE",
+            "serializationLibrary" to "jackson",
+        )
+    )
+}
+
 sourceSets {
     main {
         kotlin {
@@ -52,6 +74,7 @@ sourceSets {
 
 tasks.named("compileKotlin") {
     dependsOn("openApiGenerate")
+    dependsOn("generateUjinApi")
 }
 
 dependencies {
@@ -61,6 +84,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
     runtimeOnly("org.postgresql:postgresql")
 
@@ -72,6 +96,11 @@ dependencies {
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")
+    }
+}
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
     }
 }
 

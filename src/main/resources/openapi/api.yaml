@@ -1,177 +1,296 @@
-openapi: "3.0.3"
+openapi: 3.0.3
 info:
-  title: Тест апи
-  description: REST API демо-сервиса
-  version: "1.0.0"
+  title: Display Management API
+  version: 1.0.0
+  description: API для управления домами, дисплеями, группами и экстренными сообщениями
 
 servers:
-  - url: /api/v1
-    description: Локальный сервер
+  - url: https://api.deeply-bath.space
+    description: Production
+  - url: http://localhost:8082
+    description: Development
 
 tags:
-  - name: Users
-    description: Управление пользователями
+  - name: Houses
+    description: Управление домами
+  - name: Displays
+    description: Управление дисплеями в домах
+  - name: Logs
+    description: Логи дисплеев
+  - name: Emergency
+    description: Экстренные сообщения
+  - name: Groups
+    description: Управление группами дисплеев
 
 paths:
 
-  /users:
-
+  /houses:
     get:
-      tags: [Users]
-      summary: Список пользователей
-      operationId: getUsers
-      parameters:
-        - name: page
-          in: query
-          description: Номер страницы (с 0)
-          schema:
-            type: integer
-            default: 0
-            minimum: 0
-        - name: size
-          in: query
-          description: Размер страницы
-          schema:
-            type: integer
-            default: 20
-            minimum: 1
-            maximum: 100
-        - name: search
-          in: query
-          description: Поиск по имени или email
-          required: false
-          schema:
-            type: string
+      tags: [Houses]
+      summary: Получить список домов
+      operationId: getHouses
       responses:
-        "200":
-          description: Постраничный список пользователей
+        '200':
+          description: Список домов
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserPage"
+                type: array
+                items:
+                  $ref: '#/components/schemas/House'
+
+  /houses/{id}/displays:
+    parameters:
+      - $ref: '#/components/parameters/HouseId'
+
+    get:
+      tags: [Displays]
+      summary: Получить список дисплеев дома
+      operationId: getDisplays
+      responses:
+        '200':
+          description: Список дисплеев
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Display'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
     post:
-      tags: [Users]
-      summary: Создать пользователя
-      operationId: createUser
+      tags: [Displays]
+      summary: Создать дисплей
+      operationId: createDisplay
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateUserRequest"
+              $ref: '#/components/schemas/DisplayInput'
       responses:
-        "201":
-          description: Пользователь создан
+        '201':
+          description: Дисплей создан
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
-        "400":
-          description: Ошибка валидации
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "409":
-          description: Email уже занят
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/Display'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
-  /users/{id}:
+  /houses/{id}/displays/{displayId}:
+    parameters:
+      - $ref: '#/components/parameters/HouseId'
+      - $ref: '#/components/parameters/DisplayId'
 
     get:
-      tags: [Users]
-      summary: Получить пользователя по ID
-      operationId: getUserById
-      parameters:
-        - $ref: "#/components/parameters/UserId"
+      tags: [Displays]
+      summary: Получить дисплей по ID
+      operationId: getDisplayById
       responses:
-        "200":
-          description: Пользователь найден
+        '200':
+          description: Дисплей
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
-        "404":
-          description: Пользователь не найден
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/Display'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
-    patch:
-      tags: [Users]
-      summary: Обновить пользователя (частично)
-      operationId: updateUser
-      parameters:
-        - $ref: "#/components/parameters/UserId"
+    put:
+      tags: [Displays]
+      summary: Обновить дисплей
+      operationId: updateDisplay
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateUserRequest"
+              $ref: '#/components/schemas/DisplayInput'
       responses:
-        "200":
-          description: Пользователь обновлён
+        '200':
+          description: Дисплей обновлён
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserResponse"
-        "400":
-          description: Ошибка валидации
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: Пользователь не найден
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/Display'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
     delete:
-      tags: [Users]
-      summary: Удалить пользователя
-      operationId: deleteUser
-      parameters:
-        - $ref: "#/components/parameters/UserId"
+      tags: [Displays]
+      summary: Удалить дисплей
+      operationId: deleteDisplay
       responses:
-        "204":
-          description: Успешно удалён
-        "404":
-          description: Пользователь не найден
+        '204':
+          description: Дисплей удалён
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /houses/{id}/displays/{displayId}/logs:
+    parameters:
+      - $ref: '#/components/parameters/HouseId'
+      - $ref: '#/components/parameters/DisplayId'
+
+    get:
+      tags: [Logs]
+      summary: Получить логи дисплея
+      operationId: getDisplayLogs
+      responses:
+        '200':
+          description: Список логов
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                type: array
+                items:
+                  $ref: '#/components/schemas/Log'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /emergency:
+    post:
+      tags: [Emergency]
+      summary: Создать экстренное сообщение
+      operationId: createEmergency
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmergencyInput'
+      responses:
+        '201':
+          description: Экстренное сообщение создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Emergency'
+
+  /groups:
+    get:
+      tags: [Groups]
+      summary: Получить список групп
+      operationId: getGroups
+      responses:
+        '200':
+          description: Список групп
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+
+    post:
+      tags: [Groups]
+      summary: Создать группу
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInput'
+      responses:
+        '201':
+          description: Группа создана
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+
+  /groups/{groupId}:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+
+    get:
+      tags: [Groups]
+      summary: Получить группу по ID
+      operationId: getGroupById
+      responses:
+        '200':
+          description: Группа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Groups]
+      summary: Обновить группу
+      operationId: updateGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInput'
+      responses:
+        '200':
+          description: Группа обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Groups]
+      summary: Удалить группу
+      operationId: deleteGroup
+      responses:
+        '204':
+          description: Группа удалена
+        '404':
+          $ref: '#/components/responses/NotFound'
 
 components:
 
   parameters:
-    UserId:
+    HouseId:
       name: id
       in: path
       required: true
-      description: ID пользователя
+      description: ID дома
       schema:
         type: integer
         format: int64
 
+    DisplayId:
+      name: displayId
+      in: path
+      required: true
+      description: ID дисплея
+      schema:
+        type: integer
+        format: int64
+
+    GroupId:
+      name: groupId
+      in: path
+      required: true
+      description: ID группы
+      schema:
+        type: integer
+        format: int64
+
+  responses:
+    NotFound:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
   schemas:
 
-    UserRole:
-      type: string
-      enum: [ADMIN, USER, MODERATOR]
-      description: Роль пользователя в системе
-
-    UserResponse:
+    House:
       type: object
-      required: [id, name, email, role, createdAt]
       properties:
         id:
           type: integer
@@ -179,82 +298,162 @@ components:
           example: 1
         name:
           type: string
-          example: "Иван Иванов"
-        email:
-          type: string
-          format: email
-          example: "ivan@example.com"
-        role:
-          $ref: "#/components/schemas/UserRole"
-        createdAt:
-          type: string
-          format: date-time
+          example: "Дом на Ленина"
+        floors_number:
+          type: integer
+          example: 9
+        entrances_number:
+          type: integer
+          example: 4
+      required: [id, name, floors_number, entrances_number]
 
-    CreateUserRequest:
-      type: object
-      required: [name, email, role]
-      properties:
-        name:
-          type: string
-          minLength: 2
-          maxLength: 100
-          example: "Иван Иванов"
-        email:
-          type: string
-          format: email
-          example: "ivan@example.com"
-        role:
-          $ref: "#/components/schemas/UserRole"
-
-    UpdateUserRequest:
+    Display:
       type: object
       properties:
-        name:
-          type: string
-          minLength: 2
-          maxLength: 100
-          example: "Иван Иванов"
-        email:
-          type: string
-          format: email
-          example: "ivan@example.com"
-        role:
-          $ref: "#/components/schemas/UserRole"
-
-    UserPage:
-      type: object
-      required: [content, totalElements, totalPages, page, size]
-      properties:
-        content:
-          type: array
-          items:
-            $ref: "#/components/schemas/UserResponse"
-        totalElements:
+        id:
           type: integer
           format: int64
-          example: 42
-        totalPages:
-          type: integer
-          example: 3
-        page:
-          type: integer
-          example: 0
-        size:
-          type: integer
-          example: 20
-
-    ErrorResponse:
-      type: object
-      required: [code, message]
-      properties:
-        code:
+          example: 10
+        name:
           type: string
-          example: "USER_NOT_FOUND"
+          example: "Дисплей подъезд 1"
+        house_id:
+          type: integer
+          format: int64
+          example: 1
+        floor:
+          type: integer
+          nullable: true
+          example: 3
+        entrance:
+          type: integer
+          nullable: true
+          example: 1
+      required: [id, name, house_id]
+
+    DisplayInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Дисплей подъезд 1"
+        house_id:
+          type: integer
+          format: int64
+          example: 1
+        floor:
+          type: integer
+          nullable: true
+          example: 3
+        entrance:
+          type: integer
+          nullable: true
+          example: 1
+      required: [name, house_id]
+
+    Log:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 100
+        actor:
+          type: integer
+          format: int64
+          description: ID актора (пользователя), выполнившего действие
+          example: 42
+        display_id:
+          type: integer
+          format: int64
+          example: 10
+        text:
+          type: string
+          example: "Дисплей обновлён"
+      required: [id, actor, display_id, text]
+
+    TargetType:
+      type: string
+      enum: [DISPLAY, GROUP]
+      description: Тип цели экстренного сообщения
+
+    Emergency:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 5
+        until_at:
+          type: string
+          format: date-time
+          example: "2025-12-31T23:59:59Z"
+        text:
+          type: string
+          example: "Внимание! Плановое отключение воды"
+        target:
+          type: integer
+          format: int64
+          description: ID цели (дисплея или группы)
+          example: 10
+        target_type:
+          $ref: '#/components/schemas/TargetType'
+      required: [id, until_at, text, target, target_type]
+
+    EmergencyInput:
+      type: object
+      properties:
+        until_at:
+          type: string
+          format: date-time
+          example: "2025-12-31T23:59:59Z"
+        text:
+          type: string
+          example: "Внимание! Плановое отключение воды"
+        target:
+          type: integer
+          format: int64
+          description: ID цели (дисплея или группы)
+          example: 10
+        target_type:
+          $ref: '#/components/schemas/TargetType'
+      required: [until_at, text, target, target_type]
+
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Группа А"
+        displays:
+          type: array
+          items:
+            $ref: '#/components/schemas/Display'
+          description: Дисплеи, входящие в группу
+      required: [id, name, displays]
+
+    GroupInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Группа А"
+        display_ids:
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: ID дисплеев для включения в группу
+          example: [10, 11, 12]
+      required: [name]
+
+    Error:
+      type: object
+      properties:
         message:
           type: string
-          example: "Пользователь с id 1 не найден"
-        details:
-          type: array
-          nullable: true
-          items:
-            type: string
+          example: "Ресурс не найден"

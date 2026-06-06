@@ -1,9 +1,17 @@
 spring:
   application:
     name: demohack
+  jpa:
+    hibernate:
+      ddl-auto: update
 springdoc:
   api-docs:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
     try-it-out-enabled: true
+
+
+integration:
+  ujin:
+    access-token: ${UJIN_TOKEN:}
