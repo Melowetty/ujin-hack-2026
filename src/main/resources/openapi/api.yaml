@@ -23,6 +23,8 @@ security:
 tags:
   - name: Auth
     description: Аутентификация и управление токенами
+  - name: Users
+    description: Пользователи
   - name: Complexes
     description: Жилые комплексы
   - name: Houses
@@ -106,6 +108,46 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Получить информацию о текущем пользователе
+      operationId: getMe
+      responses:
+        '200':
+          description: Данные текущего пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /users/{userId}/role:
+    post:
+      tags: [Users]
+      summary: Установить роль пользователю
+      operationId: setUserRole
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetRoleRequest'
+      responses:
+        '200':
+          description: Роль успешно обновлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /complexes:
     get:
@@ -401,6 +443,15 @@ components:
       bearerFormat: JWT
 
   parameters:
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: ID пользователя
+      schema:
+        type: string
+        format: uuid
+
     HouseId:
       name: id
       in: path
@@ -514,6 +565,34 @@ components:
           description: Время истечения refresh токена (ISO 8601 / Unix Instant)
           example: "2025-07-10T12:00:00Z"
 
+    Role:
+      type: string
+      enum: [USER, ADMIN]
+      description: |
+        Роль пользователя:
+        - `USER` — обычный пользователь
+        - `ADMIN` — администратор
+
+    User:
+      type: object
+      required: [id, name, role]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Михаил"
+        role:
+          $ref: '#/components/schemas/Role'
+
+    SetRoleRequest:
+      type: object
+      required: [role]
+      properties:
+        role:
+          $ref: '#/components/schemas/Role'
+
     Complex:
       type: object
       required: [id, name, houses]
@@ -626,7 +705,7 @@ components:
 
     TargetType:
       type: string
-      enum: [DISPLAY, GROUP]
+      enum: [DISPLAY, HOUSE]
       description: |
         Тип цели экстренного сообщения:
         - `DISPLAY` — отдельный дисплей
