@@ -1,9 +1,13 @@
 spring:
   application:
-    name: demohack
+    name: smart-display
   jpa:
     hibernate:
       ddl-auto: update
+  docker:
+    compose:
+      enabled: true
+      file: docker-compose.local.yml
 springdoc:
   api-docs:
     path: /api-docs
