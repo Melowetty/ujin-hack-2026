@@ -5,8 +5,6 @@ import team.mcqueen.smartdisplay.generated.api.EmergencyApi
 import team.mcqueen.smartdisplay.generated.model.Emergency
 import team.mcqueen.smartdisplay.generated.model.EmergencyInput
 import team.mcqueen.smartdisplay.generated.model.TargetType
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 
 class EmergencyController : EmergencyApi {
