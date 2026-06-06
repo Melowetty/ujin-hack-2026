@@ -306,7 +306,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-    /emergency:
+  /emergency:
     post:
       tags: [Emergency]
       summary: Создать экстренное сообщение
