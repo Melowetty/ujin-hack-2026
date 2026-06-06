@@ -13,10 +13,10 @@ class AuthService(
     private val userService: UserService,
 ) {
 
-    fun registerUser(name: String, email: String, password: String) {
+    fun registerUser(name: String, login: String, password: String) {
         userService.createUserByLoginAndPassword(
             name = name,
-            login = email,
+            login = login,
             password = password,
         )
     }
