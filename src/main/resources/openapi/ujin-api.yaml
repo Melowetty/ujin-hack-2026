@@ -19,7 +19,7 @@ info:
 
     '
 servers:
-- url: https://api-uae-test.ujin.tech
+- url: https://hck-api.unicorn.icu
   description: Staging (UAE)
 - url: http://localhost:9999
   description: Local dev

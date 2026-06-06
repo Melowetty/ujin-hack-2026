@@ -14,7 +14,7 @@ springdoc:
 
 integration:
   ujin:
-    access-token: ${UJIN_TOKEN:}
+    access-token: ${UJIN_TOKEN:ust-2815000-016334baea65b1689d0e08bcdbc062bb}
 
 security:
   jwt:
