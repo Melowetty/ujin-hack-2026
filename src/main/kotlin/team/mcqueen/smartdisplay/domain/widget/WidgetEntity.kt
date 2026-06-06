@@ -17,7 +17,7 @@ import team.mcqueen.smartdisplay.generated.model.WidgetType
 class WidgetEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    val id: Long,
+    var id: Long = 0,
 
     @Column
     var name: String,

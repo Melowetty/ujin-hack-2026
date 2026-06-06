@@ -628,7 +628,7 @@ components:
 
     Display:
       type: object
-      required: [id, name, template_id, house_id]
+      required: [id, name, house_id]
       properties:
         id:
           type: integer
@@ -656,7 +656,7 @@ components:
 
     DisplayInput:
       type: object
-      required: [name, template_id, house_id]
+      required: [name, house_id]
       properties:
         name:
           type: string

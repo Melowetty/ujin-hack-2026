@@ -13,7 +13,7 @@ import jakarta.persistence.GenerationType
 class DisplayEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    val id: Long,
+    var id: Long = 0,
 
     @Column
     var name: String,
@@ -28,5 +28,5 @@ class DisplayEntity(
     var floor: Int?,
 
     @Column(nullable = true)
-    var entrence: Int?
+    var entrance: Int?
 )
