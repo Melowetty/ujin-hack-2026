@@ -468,8 +468,11 @@ components:
 
     RegisterRequest:
       type: object
-      required: [login, password]
+      required: [name, login, password]
       properties:
+        name:
+          type: string
+          example: "Михаил"
         login:
           type: string
           example: "user@example.com"

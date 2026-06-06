@@ -15,3 +15,7 @@ springdoc:
 integration:
   ujin:
     access-token: ${UJIN_TOKEN:}
+
+security:
+  jwt:
+    secret: fgdjoidgfhuidgfhioubcvhiudfghiudfguhidgfdgfhiudfghiudgfhiudgfhiudgfihudgfhijdgfhdigfhiugdfhiudgfhiudgfhiudgfhiudfg
