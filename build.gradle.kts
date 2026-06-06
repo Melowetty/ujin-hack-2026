@@ -34,6 +34,7 @@ openApiGenerate {
     configOptions.set(
         mapOf(
             "useSpringBoot3"     to "true",
+            "useResponseEntity" to "false",
             "interfaceOnly"      to "true",
             "useTags"            to "true",
             "enumPropertyNaming" to "UPPERCASE",
