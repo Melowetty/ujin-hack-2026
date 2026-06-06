@@ -11,7 +11,7 @@ import team.mcqueen.smartdisplay.service.DisplayService
 class DisplaysController(
     private val displayService: DisplayService
 ) : DisplaysApi {
-    override fun createDisplay(id: Long, displayInput: DisplayInput): ResponseEntity<Display> {
+    override fun createDisplay(complexId: Long, id: Long, displayInput: DisplayInput): ResponseEntity<Display> {
         return ResponseEntity.ok(displayService.createDisplay(
             displayInput.name,
             displayInput.templateId,
@@ -20,19 +20,19 @@ class DisplaysController(
             displayInput.entrance
         ))
     }
-    override fun deleteDisplay(id: Long, displayId: Long): ResponseEntity<Unit> {
+    override fun deleteDisplay(complexId: Long, id: Long, displayId: Long): ResponseEntity<Unit> {
         return ResponseEntity.ok(displayService.deleteDisplay(displayId))
     }
 
-    override fun getDisplayById(id: Long, displayId: Long): ResponseEntity<Display> {
+    override fun getDisplayById(complexId: Long, id: Long, displayId: Long): ResponseEntity<Display> {
         return ResponseEntity.ok(displayService.getDisplayById(displayId))
     }
 
-    override fun getDisplays(id: Long): ResponseEntity<List<Display>> {
+    override fun getDisplays(complexId: Long, id: Long): ResponseEntity<List<Display>> {
         return ResponseEntity.ok(displayService.getHouseDisplays(id))
     }
 
-    override fun updateDisplay(id: Long, displayId: Long, displayInput: DisplayInput): ResponseEntity<Display> {
+    override fun updateDisplay(complexId: Long, id: Long, displayId: Long, displayInput: DisplayInput): ResponseEntity<Display> {
         return ResponseEntity.ok(displayService.updateDisplay(
             displayId,
             displayInput.name,

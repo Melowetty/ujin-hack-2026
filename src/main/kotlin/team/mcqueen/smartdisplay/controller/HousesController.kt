@@ -4,29 +4,15 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.HousesApi
 import team.mcqueen.smartdisplay.generated.model.House
+import team.mcqueen.smartdisplay.service.HouseService
 
 @RestController
-class HousesController: HousesApi{
+class HousesController(
+    private val houseService: HouseService
+): HousesApi{
 
-    override fun getHouses(): ResponseEntity<List<House>> {
-        return ResponseEntity.ok(listOf(
-            House(
-                id = 1,
-                name = "Дом на Ленине",
-                floorsNumber = 3,
-                address = "ул. Ленина 67",
-                entrancesNumber = 2,
-                city = "Пермь"
-            ),
-            House(
-                id = 2,
-                name = "Дом на Парковой",
-                address = "ул. Парковая 41",
-                floorsNumber = 10,
-                entrancesNumber = 5,
-                city = "Москва"
-            )
-            )
-        )
+    override fun getHouses(complexId: Long, ): ResponseEntity<List<House>> {
+        return ResponseEntity.ok(houseService.getHouses(complexId))
+
     }
 }

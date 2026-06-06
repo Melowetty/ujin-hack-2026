@@ -162,7 +162,9 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /houses:
+  /complexes/{complexId}/houses:
+    parameters:
+      - $ref: '#/components/parameters/ComplexId'
     get:
       tags: [Houses]
       summary: Получить список домов
@@ -179,8 +181,9 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /houses/{id}/displays:
+  /complexes/{complexId}/houses/{id}/displays:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
 
     get:
@@ -223,8 +226,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /houses/{id}/displays/{displayId}:
+  /complexes/{complexId}/houses/{id}/displays/{displayId}:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
       - $ref: '#/components/parameters/DisplayId'
 
@@ -278,8 +282,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /houses/{id}/displays/{displayId}/logs:
+  /complexes/{complexId}/houses/{id}/displays/{displayId}/logs:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
       - $ref: '#/components/parameters/DisplayId'
 
@@ -447,6 +452,15 @@ components:
       schema:
         type: string
         format: uuid
+
+    ComplexId:
+      name: complexId
+      in: path
+      required: true
+      description: ID жилого комплекса
+      schema:
+        type: integer
+        format: int64
 
     HouseId:
       name: id
