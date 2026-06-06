@@ -1,6 +1,7 @@
 package team.mcqueen.smartdisplay.service
 
 import java.util.UUID
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import team.mcqueen.smartdisplay.domain.auth.AuthTokenPair
@@ -11,13 +12,15 @@ import team.mcqueen.smartdisplay.exception.InvalidAuthTokenException
 class AuthService(
     private val jwtTokenService: JwtTokenService,
     private val userService: UserService,
+    private val passwordEncoder: PasswordEncoder,
 ) {
 
     fun registerUser(name: String, login: String, password: String) {
+        val encodedPassword = passwordEncoder.encode(password)
         userService.createUserByLoginAndPassword(
             name = name,
             login = login,
-            password = password,
+            password = encodedPassword,
         )
     }
 
@@ -25,8 +28,13 @@ class AuthService(
         login: String,
         password: String
     ): AuthTokenPair {
-        val user = userService.getUserByLoginAndPassword(login, password)
+        val user = userService.getUserByLogin(login)
             ?: throw AuthAccessDeniedException("User not found or incorrect password")
+
+        if (!passwordEncoder.matches(password, user.password)) {
+            throw AuthAccessDeniedException("User not found or incorrect password")
+        }
+
         return jwtTokenService.issueTokens(user)
     }
 

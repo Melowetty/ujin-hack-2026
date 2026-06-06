@@ -5,7 +5,6 @@ import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.stereotype.Service
@@ -19,7 +18,6 @@ import team.mcqueen.smartdisplay.repository.UserRepository
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder,
 ) {
 
     fun getUserInfo(): UserInfo {
@@ -38,20 +36,16 @@ class UserService(
         return user
     }
 
-    fun getUserByLoginAndPassword(login: String, password: String): UserEntity? {
-        val encodedPassword = passwordEncoder.encode(password)
-
-        return userRepository.findByLoginAndPassword(login, encodedPassword)
+    fun getUserByLogin(login: String): UserEntity? {
+        return userRepository.findByLogin(login)
     }
 
     fun createUserByLoginAndPassword(name: String, login: String, password: String): UserEntity {
-        val encodedPassword = passwordEncoder.encode(password)
-
         return userRepository.save(
             UserEntity(
                 name = name,
                 login = login,
-                password = encodedPassword,
+                password = password,
                 role = AuthRole.USER,
             )
         )

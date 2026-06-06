@@ -7,5 +7,5 @@ import team.mcqueen.smartdisplay.domain.auth.entity.UserEntity
 
 @Repository
 interface UserRepository : JpaRepository<UserEntity, UUID> {
-    fun findByLoginAndPassword(login: String, password: String): UserEntity?
+    fun findByLogin(login: String): UserEntity?
 }
