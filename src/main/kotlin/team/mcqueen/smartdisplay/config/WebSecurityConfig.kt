@@ -43,7 +43,7 @@ class WebSecurityConfig(
                 auth
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                    .requestMatchers("/emergency/**").hasRole(AuthRole.ADMIN.name)
+//                    .requestMatchers("/emergency/**").hasRole(AuthRole.ADMIN.name)
                     .anyRequest().permitAll()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }

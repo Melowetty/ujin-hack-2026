@@ -162,7 +162,9 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /houses:
+  /complexes/{complexId}/houses:
+    parameters:
+      - $ref: '#/components/parameters/ComplexId'
     get:
       tags: [Houses]
       summary: Получить список домов
@@ -179,8 +181,9 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /houses/{id}/displays:
+  /complexes/{complexId}/houses/{id}/displays:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
 
     get:
@@ -223,8 +226,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /houses/{id}/displays/{displayId}:
+  /complexes/{complexId}/houses/{id}/displays/{displayId}:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
       - $ref: '#/components/parameters/DisplayId'
 
@@ -278,8 +282,9 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /houses/{id}/displays/{displayId}/logs:
+  /complexes/{complexId}/houses/{id}/displays/{displayId}/logs:
     parameters:
+      - $ref: '#/components/parameters/ComplexId'
       - $ref: '#/components/parameters/HouseId'
       - $ref: '#/components/parameters/DisplayId'
 
@@ -321,6 +326,21 @@ paths:
                 $ref: '#/components/schemas/Emergency'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /emergency/{emergencyId}:
+    parameters:
+      - $ref: '#/components/parameters/EmergencyId'
+    delete:
+      tags: [Emergency]
+      summary: Удалить экстренное сообщение
+      operationId: deleteEmergency
+      responses:
+        '204':
+          description: Экстренное сообщение удалён
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /widgets:
     get:
@@ -448,6 +468,15 @@ components:
         type: string
         format: uuid
 
+    ComplexId:
+      name: complexId
+      in: path
+      required: true
+      description: ID жилого комплекса
+      schema:
+        type: integer
+        format: int64
+
     HouseId:
       name: id
       in: path
@@ -462,6 +491,15 @@ components:
       in: path
       required: true
       description: ID дисплея
+      schema:
+        type: integer
+        format: int64
+
+    EmergencyId:
+      name: emergencyId
+      in: path
+      required: true
+      description: ID экстренного сообщения
       schema:
         type: integer
         format: int64

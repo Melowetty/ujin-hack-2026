@@ -7,7 +7,7 @@ import team.mcqueen.smartdisplay.generated.model.Log
 
 @RestController
 class LogsController: LogsApi {
-    override fun getDisplayLogs(id: Long, displayId: Long): ResponseEntity<List<Log>> {
+    override fun getDisplayLogs(complexId: Long, id: Long, displayId: Long): ResponseEntity<List<Log>> {
         return ResponseEntity.ok(listOf(
             Log(
                 id = 1,
