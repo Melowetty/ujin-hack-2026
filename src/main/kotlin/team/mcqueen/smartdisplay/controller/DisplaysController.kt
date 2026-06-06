@@ -1,10 +1,12 @@
 package team.mcqueen.smartdisplay.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.DisplaysApi
 import team.mcqueen.smartdisplay.generated.model.Display
 import team.mcqueen.smartdisplay.generated.model.DisplayInput
 
+@RestController
 class DisplaysController : DisplaysApi {
     override fun createDisplay(id: Long, displayInput: DisplayInput): ResponseEntity<Display> {
         return ResponseEntity.ok(Display(

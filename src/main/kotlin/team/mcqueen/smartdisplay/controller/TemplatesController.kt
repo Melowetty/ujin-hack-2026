@@ -1,10 +1,12 @@
 package team.mcqueen.smartdisplay.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.TemplatesApi
 import team.mcqueen.smartdisplay.generated.model.Template
 import team.mcqueen.smartdisplay.generated.model.TemplateInput
 
+@RestController
 class TemplatesController : TemplatesApi {
     override fun createTemplate(templateInput: TemplateInput): ResponseEntity<Template> {
         return ResponseEntity.ok(Template(

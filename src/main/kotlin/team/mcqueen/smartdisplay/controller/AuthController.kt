@@ -1,6 +1,7 @@
 package team.mcqueen.smartdisplay.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.AuthApi
 import team.mcqueen.smartdisplay.generated.model.LoginRequest
 import team.mcqueen.smartdisplay.generated.model.RefreshRequest
@@ -8,6 +9,7 @@ import team.mcqueen.smartdisplay.generated.model.RegisterRequest
 import team.mcqueen.smartdisplay.generated.model.TokenResponse
 import java.time.OffsetDateTime
 
+@RestController
 class AuthController : AuthApi {
     override fun login(loginRequest: LoginRequest): ResponseEntity<TokenResponse> {
         return ResponseEntity.ok(TokenResponse(

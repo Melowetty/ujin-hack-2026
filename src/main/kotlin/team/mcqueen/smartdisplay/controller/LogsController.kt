@@ -1,9 +1,11 @@
 package team.mcqueen.smartdisplay.controller
 
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.LogsApi
 import team.mcqueen.smartdisplay.generated.model.Log
 
+@RestController
 class LogsController: LogsApi {
     override fun getDisplayLogs(id: Long, displayId: Long): ResponseEntity<List<Log>> {
         return ResponseEntity.ok(listOf(
