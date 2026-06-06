@@ -17,5 +17,8 @@ class WidgetFieldEntity(
     var type: FieldType,
 
     @Column
-    var optional: Boolean
+    var optional: Boolean,
+
+    @ManyToOne()
+    var widget: WidgetEntity
 )
