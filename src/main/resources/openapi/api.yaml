@@ -769,7 +769,7 @@ components:
 
     DeviceScreen:
       type: object
-      required: [ deviceId, complexId, houseId, complexName, houseName, houseAddress, template, rendered_template ]
+      required: [ deviceId, complexId, houseId, complexName, houseName, houseAddress, template, rendered_template, emergencies ]
       properties:
         deviceId:
           type: integer
@@ -802,6 +802,10 @@ components:
                 position: 1
               - type: "PARKING"
                 position: 2
+        emergencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Emergency'
         rendered_template:
           type: object
           required: [ widgets ]

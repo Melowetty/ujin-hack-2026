@@ -14,6 +14,7 @@ class DeviceScreenService(
     private val templateService: TemplateService,
     private val houseService: HouseService,
     private val complexService: ComplexService,
+    private val emergencyService: EmergencyService,
 ) {
 
     fun renderTemplate(token: String): DeviceScreen {
@@ -25,6 +26,8 @@ class DeviceScreenService(
             ?: throw NotFoundException("House")
         val complex = complexService.getComplexByHouseId(house.id)
             ?: throw NotFoundException("Complex")
+
+        val emergencies = emergencyService.getCurrentEmergency(device.id)
 
         return DeviceScreen(
             deviceId = device.id,
@@ -44,7 +47,8 @@ class DeviceScreenService(
                         )
                     )
                 )
-            )
+            ),
+            emergencies = emergencies
         )
 
     }

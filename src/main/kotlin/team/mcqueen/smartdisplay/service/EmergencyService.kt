@@ -11,7 +11,8 @@ import java.time.OffsetDateTime
 
 @Service
 class EmergencyService(
-    private val emergencyRepository: EmergencyRepository
+    private val emergencyRepository: EmergencyRepository,
+    private val displayService: DisplayService,
 ) {
     fun createEmergency(untilAt: OffsetDateTime, text: String, priority: Long, target: Long, targetType: TargetType): Emergency {
         val emergency = EmergencyEntity(
@@ -34,5 +35,17 @@ class EmergencyService(
 
     fun deleteEmergency(emergencyId: Long) {
         emergencyRepository.deleteById(emergencyId)
+    }
+
+    fun getCurrentEmergency(deviceId: Long): List<Emergency> {
+        val display = displayService.getDisplayById(deviceId)
+
+        val emergencyByHouse = emergencyRepository.getEmergencyByTargetAndTargetTypeAndUntilAtMoreThen(display.houseId,
+            TargetType.HOUSE)
+
+        val emergencyByDisplay = emergencyRepository.getEmergencyByTargetAndTargetTypeAndUntilAtMoreThen(display.houseId,
+            TargetType.DISPLAY)
+
+        return emergencyByDisplay + emergencyByHouse
     }
 }
