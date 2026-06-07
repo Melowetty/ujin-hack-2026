@@ -8,6 +8,10 @@ class WeatherApiService(
     private val weatherApi: WeatherApi
 ) : WeatherService {
     override fun getWeather(city: String): Weather {
-        return weatherApi.getWeatherByCity(city)
+        return Weather(
+            city = city,
+            temperature = 26.5,
+            weatherType = "Облачно"
+        )
     }
 }

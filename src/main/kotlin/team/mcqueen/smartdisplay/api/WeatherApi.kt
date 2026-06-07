@@ -46,7 +46,7 @@ class WeatherApi(
 
         val geoObject = featureMember.first()["GeoObject"] as Map<String, Any>
         val point = geoObject["Point"] as Map<String, Any>
-        val pos = point["pos"] as String  // "longitude latitude"
+        val pos = point["pos"] as String
         val (lon, lat) = pos.split(" ").map { it.toDouble() }
 
         return Pair(lat, lon)

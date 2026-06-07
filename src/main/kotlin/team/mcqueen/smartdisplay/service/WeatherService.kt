@@ -4,4 +4,5 @@ import team.mcqueen.smartdisplay.domain.weather.Weather
 
 interface WeatherService {
     fun getWeather(city: String): Weather
+
 }
