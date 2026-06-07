@@ -43,7 +43,7 @@ class EmergencyService(
         val emergencyByHouse = emergencyRepository.getEmergencyByTargetAndTargetTypeAndUntilAtMoreThen(display.houseId,
             TargetType.HOUSE)
 
-        val emergencyByDisplay = emergencyRepository.getEmergencyByTargetAndTargetTypeAndUntilAtMoreThen(display.houseId,
+        val emergencyByDisplay = emergencyRepository.getEmergencyByTargetAndTargetTypeAndUntilAtMoreThen(display.id,
             TargetType.DISPLAY)
 
         return emergencyByDisplay + emergencyByHouse
