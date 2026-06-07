@@ -10,7 +10,8 @@ import team.mcqueen.smartdisplay.repository.DisplayRepository
 
 @Service
 class DisplayService(
-    private val displayRepository: DisplayRepository
+    private val displayRepository: DisplayRepository,
+    private val logService: LogService
 ) {
     fun createDisplay(name: String, templateId: Long?, houseId:Long, floor: Int?, entrance: Int?): Display {
         var token = RandomStringUtils.randomAlphanumeric(8)
@@ -23,6 +24,7 @@ class DisplayService(
             entrance = entrance
         )
         val newDisplay = displayRepository.save(display)
+        logService.createLog(1,newDisplay.id,"actor ${1} create new display ${newDisplay.id}")
         return Display(
             newDisplay.id,
             newDisplay.token,
@@ -76,6 +78,7 @@ class DisplayService(
         entity.entrance = entrance
         entity.templateId = templateId
         var newEntity = displayRepository.save(entity)
+        logService.createLog(1,entity.id,"actor ${1} edit display ${entity.id}")
         return Display(
             id = newEntity.id,
             token = entity.token,
