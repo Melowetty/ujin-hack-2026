@@ -15,6 +15,10 @@ springdoc:
 integration:
   ujin:
     access-token: ${UJIN_TOKEN:ust-2815000-016334baea65b1689d0e08bcdbc062bb}
+  weather-api:
+    access-token: ${WEATHER_TOKEN:d00eaa179ed8b8c2127892a03cd180d9}
+  geo-api:
+    access-token: ${GEO_TOKEN:825b0b2f-36a3-405c-9ac3-0023b1363437}
 
 security:
   jwt:
