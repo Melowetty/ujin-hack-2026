@@ -40,7 +40,7 @@ class EnrichService(
         for (i in 0 until size) {
             val widget = widgetsLayout[i]
             val widgetId = widget.get("i").asText()
-            val widgetTypeRaw = widget.get("type").asText()
+            val widgetTypeRaw = widget.get("type").asText().uppercase()
             val widgetType = WidgetType.valueOf(widgetTypeRaw)
 
             result.add(Pair(widgetId, widgetType))
