@@ -918,11 +918,31 @@ components:
 
     WidgetType:
       type: string
-      enum: [WEATHER, PARKING]
+      enum:
+        - HEADER
+        - FOOTER
+        - WEATHER
+        - HOUSE_NEWS
+        - PARKING
+        - STORAGE
+        - EXTERNAL_NEWS
+        - IMAGE
+        - TEXT
+        - CAMERA
+        - PROMO
       description: |
         Тип виджета:
-        - `WEATHER` — погода
-        - `PARKING` — парковка
+        - `HEADER` — верхний блок (одиночный)
+        - `FOOTER` — нижний блок (одиночный)
+        - `WEATHER` — погода (одиночный)
+        - `HOUSE_NEWS` — новости дома (одиночный)
+        - `PARKING` — парковки (одиночный)
+        - `STORAGE` — кладовые (одиночный)
+        - `EXTERNAL_NEWS` — RSS / внешние новости (одиночный)
+        - `IMAGE` — картинка (множественный)
+        - `TEXT` — текст (множественный)
+        - `CAMERA` — камера (множественный)
+        - `PROMO` — объявление / промо (множественный)
 
     FieldType:
       type: string

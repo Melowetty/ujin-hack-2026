@@ -17,7 +17,7 @@ class EnrichService(
 
         return widgets.mapNotNull { widget ->
             val enriched =
-                getEnrichProcessor(widget.second)?.enrich(widget.second, complexId, device) ?: return@mapNotNull null
+                getEnrichProcessor(widget.second)?.enrich(complexId, device) ?: return@mapNotNull null
 
             RenderedWidget(
                 id = widget.first,
