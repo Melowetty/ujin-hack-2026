@@ -21,7 +21,7 @@ class DeviceScreenService(
         val device = deviceRepository.getByToken(token)
             ?: throw NotFoundException("Device")
 
-        val template = templateService.getTemplateById(device.id)
+        val template = templateService.getTemplateById(device.templateId ?: 0)
         val house = houseService.getHouseById(device.houseId)
             ?: throw NotFoundException("House")
         val complex = complexService.getComplexByHouseId(house.id)
