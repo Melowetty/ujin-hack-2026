@@ -4,29 +4,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 import team.mcqueen.smartdisplay.generated.api.LogsApi
 import team.mcqueen.smartdisplay.generated.model.Log
+import team.mcqueen.smartdisplay.service.LogService
 
 @RestController
-class LogsController: LogsApi {
+class LogsController(
+    private val logsService: LogService,
+): LogsApi {
     override fun getDisplayLogs(complexId: Long, id: Long, displayId: Long): ResponseEntity<List<Log>> {
-        return ResponseEntity.ok(listOf(
-            Log(
-                id = 1,
-                actor = 1,
-                displayId = 1,
-                text = "Установлен шаблон 1"
-            ),
-            Log(
-                id = 2,
-                actor = 1,
-                displayId = 1,
-                text = "Установлен шаблон 2"
-            ),
-            Log(
-                id = 3,
-                actor = 1,
-                displayId = 2,
-                text = "Установлен шаблон 2"
-            )
-        ))
+        return ResponseEntity.ok(logsService.getDisplayLogs(displayId))
     }
 }
