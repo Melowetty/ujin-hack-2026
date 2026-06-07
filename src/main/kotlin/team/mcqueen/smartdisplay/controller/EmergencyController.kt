@@ -26,4 +26,8 @@ class EmergencyController(
     override fun deleteEmergency(emergencyId: Long): ResponseEntity<Unit> {
         return ResponseEntity.ok(emergencyService.deleteEmergency(emergencyId))
     }
+
+    override fun getEmergency(): ResponseEntity<List<Emergency>> {
+        return ResponseEntity.ok(emergencyService.getEmergencies())
+    }
 }

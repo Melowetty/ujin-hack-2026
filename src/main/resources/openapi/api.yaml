@@ -357,6 +357,23 @@ paths:
           $ref: '#/components/responses/NotFound'
 
   /emergency:
+    get:
+      tags: [ Emergency ]
+      summary: Получить все чс
+      operationId: getEmergency
+      responses:
+        '200':
+          description: Список чс
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Emergency'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       tags: [Emergency]
       summary: Создать экстренное сообщение

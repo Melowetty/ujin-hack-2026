@@ -48,4 +48,15 @@ class EmergencyService(
 
         return emergencyByDisplay + emergencyByHouse
     }
+
+    fun getEmergencies(): List<Emergency> {
+        return emergencyRepository.findAll().map{it -> Emergency(
+            id = it.id,
+            text = it.text,
+            priority = it.priority,
+            target = it.target,
+            targetType = it.targetType,
+            untilAt = it.untilAt
+        ) }
+    }
 }
