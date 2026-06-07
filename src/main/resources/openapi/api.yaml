@@ -209,6 +209,27 @@ paths:
                   $ref: '#/components/schemas/House'
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /complexes/{complexId}/houses/{id}/link:
+    parameters:
+      - $ref: '#/components/parameters/ComplexId'
+      - $ref: '#/components/parameters/HouseId'
+    post:
+      tags: [Houses]
+      summary: Установить шаблон на все дисплеи в доме
+      operationId: linkHouse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkInput'
+      responses:
+        '201':
+          description: Шаблон применился
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 
   /complexes/{complexId}/houses/{id}/displays:
     parameters:
@@ -925,6 +946,17 @@ components:
         optional:
           type: boolean
           example: false
+
+    LinkInput:
+      type: object
+      required:
+        - templateId
+      properties:
+        templateId:
+          type: integer
+          format: int64
+          description: ID шаблона
+          example: 5
 
     Widget:
       type: object
