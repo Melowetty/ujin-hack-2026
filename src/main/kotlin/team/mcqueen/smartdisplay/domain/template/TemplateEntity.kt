@@ -17,6 +17,6 @@ class TemplateEntity(
     @Column
     var name: String,
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     var body: String
 )
