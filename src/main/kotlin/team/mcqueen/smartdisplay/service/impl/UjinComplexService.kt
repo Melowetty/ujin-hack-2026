@@ -47,6 +47,10 @@ class UjinComplexService(
         }
     }
 
+    override fun getComplexByHouseId(houseId: Long): Complex? {
+        return getComplexList().firstOrNull { it.houses.firstOrNull { it.id == houseId } != null }
+    }
+
     fun getHousesInForeach(): List<BuildingItem> {
         val firstPage = complexApi.getBuildingsList(
             ujinToken,

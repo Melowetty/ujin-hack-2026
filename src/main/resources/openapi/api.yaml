@@ -31,6 +31,8 @@ tags:
     description: Дома
   - name: Displays
     description: Дисплеи в домах
+  - name: DisplayScreen
+    description: API для дисплеев
   - name: Logs
     description: Логи дисплеев
   - name: Emergency
@@ -142,6 +144,33 @@ paths:
           description: Роль успешно обновлена
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /device-screen/{token}:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        description: Токен устройства (8 символов)
+        schema:
+          type: string
+          minLength: 8
+          maxLength: 8
+          example: "8S1mv0lv"
+
+    get:
+      tags: [ DisplayScreen ]
+      summary: Получить данные экрана устройства по токену
+      operationId: getDeviceScreen
+      security: [ ]
+      responses:
+        '200':
+          description: Данные экрана устройства
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceScreen'
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -721,6 +750,66 @@ components:
           type: integer
           nullable: true
           example: 1
+
+    RenderedWidget:
+      type: object
+      required: [ id, type, body ]
+      properties:
+        id:
+          type: string
+          example: "widget-001"
+        type:
+          $ref: '#/components/schemas/WidgetType'
+        body:
+          type: object
+          description: Произвольная JSON-структура данных виджета
+          example:
+            temperature: 21
+            condition: "cloudy"
+
+    DeviceScreen:
+      type: object
+      required: [ deviceId, complexId, houseId, complexName, houseName, houseAddress, template, rendered_template ]
+      properties:
+        deviceId:
+          type: integer
+          format: int64
+          example: 10
+        complexId:
+          type: integer
+          format: int64
+          example: 1
+        houseId:
+          type: integer
+          format: int64
+          example: 3
+        complexName:
+          type: string
+          example: "ЖК Центральный"
+        houseName:
+          type: string
+          example: "Корпус 1"
+        houseAddress:
+          type: string
+          example: "ул. Ленина, 10"
+        template:
+          type: object
+          description: Произвольная JSON-структура конфигурации шаблона (аналогично Template.body)
+          example:
+            layout: "vertical"
+            widgets:
+              - type: "WEATHER"
+                position: 1
+              - type: "PARKING"
+                position: 2
+        rendered_template:
+          type: object
+          required: [ widgets ]
+          properties:
+            widgets:
+              type: array
+              items:
+                $ref: '#/components/schemas/RenderedWidget'
 
     Log:
       type: object

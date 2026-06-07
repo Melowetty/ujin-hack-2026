@@ -11,5 +11,5 @@ import java.util.*
 interface DisplayRepository : JpaRepository<DisplayEntity, Long> {
     fun getDisplayEntityById(displayId: Long): DisplayEntity?
     fun getAllByHouseId(houseId: Long): List<DisplayEntity>?
-
+    fun getByToken(token: String): DisplayEntity?
 }

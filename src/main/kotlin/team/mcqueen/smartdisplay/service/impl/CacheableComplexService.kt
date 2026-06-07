@@ -25,4 +25,8 @@ class CacheableComplexService(
         cache = actualData
         return actualData
     }
+
+    override fun getComplexByHouseId(houseId: Long): Complex? {
+        return getComplexList().firstOrNull { it.houses.firstOrNull { it.id == houseId } != null }
+    }
 }
